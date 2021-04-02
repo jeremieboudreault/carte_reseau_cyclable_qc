@@ -1,25 +1,29 @@
-Carte (améliorée) du réseau cyclable de la Ville de Québec 🚲
+Carte _améliorée_ du réseau cyclable de Québec 🚲
 ================================================================================
 
 
 La ville de Québec offre [une carte de son réseau cyclable](https://carte.ville.quebec.qc.ca/mobile?z=3&x=241231&y=5189013&fondcarte=ReseauCyclable#) pour les utilisateurs de son réseau. Or, la carte n'est malheureusement pas très belle ni rapidement mise à jour : nouveaux liens non ajoutés, travaux en cours qui fracture le réseau, rues partagées et piétones, etc.
 
-Cette carte préparé à l'aide de QGIS, R et Shiny permet aux utilisateurs du réseau d'avoir une vision plus claire de notre beau réseau et de pouvoir en profiter à l'année !
+Cette carte préparé à l'aide de __QGIS__, __R__ et __Shiny__ permet aux utilisateurs du réseau d'avoir une vision plus claire de notre beau réseau et de pouvoir en profiter à l'année !
+
+> __Disclaimer__ : Cette carte n'est nullement associée à la Ville de Québec. Son utilisateur est faite aux risques et périls des utilisateurs.
 
 
-Avant 
+Ancienne carte
 --------------------------------------------------------------------------------
 
 ![](www/old.png)
 
----
 
-Après
+Carte améliorée
 --------------------------------------------------------------------------------
 
-![](www/new.png)
+![](www/new1.png)
 
----
+![](www/new2.png)
+
+![](www/new3.png)
+
 
 Nouveautés 
 --------------------------------------------------------------------------------
