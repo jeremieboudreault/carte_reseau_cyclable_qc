@@ -22,10 +22,11 @@ library(sp)
 
 
 lines_qc <- rgdal::readOGR(
-  dsn       = file.path("data", "reseau_qc"),
-  layer     = "vdq-reseaucyclable",
-  use_iconv = TRUE,
-  encoding  = "UTF-8"
+  dsn              = file.path("data", "reseau_qc"),
+  layer            = "vdq-reseaucyclable",
+  use_iconv        = TRUE,
+  encoding         = "UTF-8",
+  stringsAsFactors = FALSE
 )
 
 
@@ -46,22 +47,39 @@ table(lines_qc@data$TYPE, useNA = "always")
 
 # Define a list with the correct names and IDS.
 type_names <- list(
-    PC = "Piste cyclable",
-    BC = "Bande cyclable",
-    CD = "Chaussée désignée"
+    PC     = "Piste cyclable",
+    BC     = "Bande cyclable",
+    CD     = "Chaussée désignée",
+    FUTUR  = "Améliorations 2021"
 )
+
+# Replaces NAs by "N".
+lines_qc$FUTUR[is.na(lines_qc$FUTUR)]   <-  "N"
+
 
 # Create subclass --------------------------------------------------------------
 
 
 # Pistes cyclables (PC).
-lines_pc <- rgeos::gLineMerge(lines_qc[lines_qc$TYPE == type_names[["PC"]], ])
+lines_pc <- rgeos::gLineMerge(lines_qc[
+    lines_qc$TYPE   == type_names[["PC"]] &
+    lines_qc$FUTUR  != "Y"
+, ])
 
-# Bandes cyclblaes (BC).
-lines_bc <- rgeos::gLineMerge(lines_qc[lines_qc$TYPE == type_names[["BC"]], ])
+# Bandes cyclablaes (BC).
+lines_bc <- rgeos::gLineMerge(lines_qc[
+    lines_qc$TYPE   == type_names[["BC"]] &
+    lines_qc$FUTUR  != "Y"
+, ])
 
 # Chaussée désignée (CD).
-lines_cd <- rgeos::gLineMerge(lines_qc[lines_qc$TYPE == type_names[["CD"]], ])
+lines_cd <- rgeos::gLineMerge(lines_qc[
+    lines_qc$TYPE   == type_names[["CD"]] &
+    lines_qc$FUTUR  != "Y"
+, ])
+
+# Amélioration au réseau.
+lines_futur <- lines_qc[lines_qc$FUTUR == "Y", ]
 
 
 # Create the leaflet map -------------------------------------------------------
@@ -102,7 +120,6 @@ leaflet::addPolylines(
 # Add the "Chaussée Désignée".
 leaflet::addPolylines(
     data         = lines_cd,
-    layerId      = type_names[["CD"]],
     group        = type_names[["CD"]],
     stroke       = TRUE,
     color        = "green",
@@ -111,9 +128,28 @@ leaflet::addPolylines(
     dashArray    = NULL,
     smoothFactor = 1
 ) %>%
+    
+# Add the "Améliroations".
+leaflet::addPolylines(
+    data         = lines_futur,
+    group        = type_names[["FUTUR"]],
+    stroke       = TRUE,
+    color        = "#2E8DEC",
+    weight       = 2.5,
+    opacity      = 0.95,
+    dashArray    = NULL,
+    smoothFactor = 1,
+    popup        = ~DESC
+) %>%
+    
+# Hide groups.
+leaflet::hideGroup(
+    group = type_names[["FUTUR"]]
+) %>%
 
 # Add controls.
 leaflet::addLayersControl(
     overlayGroups = unlist(type_names, use.names = FALSE),
     options       = layersControlOptions(collapse = FALSE)
 )
+    
