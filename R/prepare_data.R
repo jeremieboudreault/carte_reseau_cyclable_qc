@@ -92,6 +92,13 @@ lines_qc$COL[lines_qc$TYPE == map_names["BC"]] <- "green"
 lines_qc$COL[lines_qc$TYPE == map_names["CD"]] <- "green"
 
 
+# Adjust dash.
+lines_qc$DASH <- ""
+lines_qc$DASH[lines_qc$TYPE == map_names["PC"]] <- ""
+lines_qc$DASH[lines_qc$TYPE == map_names["BC"]] <- ""
+lines_qc$DASH[lines_qc$TYPE == map_names["CD"]] <- "4"
+
+
 # Extract <WINTER> and <FUTUR> -------------------------------------------------
 
 
@@ -143,7 +150,7 @@ leaflet::addPolylines(
     color        = ~COL,
     weight       = ~LWD,
     opacity      = 1L,
-    dashArray    = NULL,
+    dashArray    = ~DASH,
     smoothFactor = 1
 ) %>%
 
@@ -155,11 +162,12 @@ leaflet::addPolylines(
     color        = "#EB5E28",
     weight       = ~LWD,
     opacity      = 0.95,
-    dashArray    = NULL,
+    dashArray    = ~DASH,
     smoothFactor = 1,
-    label        = ~NOM_TOPOGR,
-    labelOptions = leaflet::labelOptions(noHide = TRUE),
-    popup        = ~DESC
+    #label        = ~DESC,
+    #labelOptions = leaflet::labelOptions(noHide = TRUE, minZoom = 12L),
+    popup        = ~DESC,
+    popupOptions = leaflet::popupOptions(maxWidth = 200L)
 ) %>%
 
 # Add the "Winter".
@@ -195,4 +203,15 @@ leaflet::addLayersControl(
     ),
     options       = layersControlOptions(collapse = FALSE)
 )
+
+# Add legend.
+# leaflet::addLegend("bottomright",
+#    colors = c("darkgreen", "darkgreen", "green"),
+#    labels = unlist(map_names[c("PC", "BC", "CD")], use.names = FALSE),
+#    group = map_names[["RCE"]]
+#
+# )
+
+map
+
 
